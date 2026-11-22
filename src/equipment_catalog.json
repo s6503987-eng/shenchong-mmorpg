@@ -1,0 +1,130 @@
+[
+  {
+    "id": "warrior_head",
+    "job": "戰士",
+    "slot": "head",
+    "name": "蒼鋼戰冠",
+    "icon": "/assets/equipment_icons/warrior_head.png",
+    "description": "開放式銀藍冠盔、金色前額護片"
+  },
+  {
+    "id": "warrior_outfit",
+    "job": "戰士",
+    "slot": "outfit",
+    "name": "蒼鋼守衛鎧",
+    "icon": "/assets/equipment_icons/warrior_outfit.png",
+    "description": "藍銀甲片、黃金護肩與胸甲"
+  },
+  {
+    "id": "warrior_cape",
+    "job": "戰士",
+    "slot": "cape",
+    "name": "守誓披風",
+    "icon": "/assets/equipment_icons/warrior_cape.png",
+    "description": "青藍飄動披風、守護紋章"
+  },
+  {
+    "id": "warrior_weapon",
+    "job": "戰士",
+    "slot": "weapon",
+    "name": "晨鋒長劍",
+    "icon": "/assets/equipment_icons/warrior_weapon.png",
+    "description": "長直銀色劍刃、藍晶護手"
+  },
+  {
+    "id": "mage_head",
+    "job": "法師",
+    "slot": "head",
+    "name": "星淵法帽",
+    "icon": "/assets/equipment_icons/mage_head.png",
+    "description": "紫羅蘭法帽、星晶帽帶"
+  },
+  {
+    "id": "mage_outfit",
+    "job": "法師",
+    "slot": "outfit",
+    "name": "星紋秘術袍",
+    "icon": "/assets/equipment_icons/mage_outfit.png",
+    "description": "紫藍長袍、金色星軌紋"
+  },
+  {
+    "id": "mage_cape",
+    "job": "法師",
+    "slot": "cape",
+    "name": "暮星斗篷",
+    "icon": "/assets/equipment_icons/mage_cape.png",
+    "description": "暮紫短斗篷、流光刺繡"
+  },
+  {
+    "id": "mage_weapon",
+    "job": "法師",
+    "slot": "weapon",
+    "name": "秘晶法杖",
+    "icon": "/assets/equipment_icons/mage_weapon.png",
+    "description": "紫晶杖頭、金色環形杖身"
+  },
+  {
+    "id": "archer_head",
+    "job": "弓箭手",
+    "slot": "head",
+    "name": "翠羽兜帽",
+    "icon": "/assets/equipment_icons/archer_head.png",
+    "description": "森林綠兜帽、白羽與黃金飾片"
+  },
+  {
+    "id": "archer_outfit",
+    "job": "弓箭手",
+    "slot": "outfit",
+    "name": "疾風獵裝",
+    "icon": "/assets/equipment_icons/archer_outfit.png",
+    "description": "綠色輕甲、皮革肩甲束腕"
+  },
+  {
+    "id": "archer_cape",
+    "job": "弓箭手",
+    "slot": "cape",
+    "name": "森語短披",
+    "icon": "/assets/equipment_icons/archer_cape.png",
+    "description": "草綠短披風、葉形下擺"
+  },
+  {
+    "id": "archer_weapon",
+    "job": "弓箭手",
+    "slot": "weapon",
+    "name": "風吟長弓",
+    "icon": "/assets/equipment_icons/archer_weapon.png",
+    "description": "金綠反曲長弓、葉片弓臂"
+  },
+  {
+    "id": "spirit_head",
+    "job": "御靈師",
+    "slot": "head",
+    "name": "星輝靈冠",
+    "icon": "/assets/equipment_icons/spirit_head.png",
+    "description": "金色靈冠、中央晶藍寶石"
+  },
+  {
+    "id": "spirit_outfit",
+    "job": "御靈師",
+    "slot": "outfit",
+    "name": "共鳴法衣",
+    "icon": "/assets/equipment_icons/spirit_outfit.png",
+    "description": "白藍法衣、金邊與寵物徽紋"
+  },
+  {
+    "id": "spirit_cape",
+    "job": "御靈師",
+    "slot": "cape",
+    "name": "靈光披風",
+    "icon": "/assets/equipment_icons/spirit_cape.png",
+    "description": "深藍披風、白金衣襬與垂墜飾"
+  },
+  {
+    "id": "spirit_weapon",
+    "job": "御靈師",
+    "slot": "weapon",
+    "name": "神寵共鳴珠",
+    "icon": "/assets/equipment_icons/spirit_weapon.png",
+    "description": "晶藍浮空靈珠、金色星環"
+  }
+]

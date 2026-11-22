@@ -1,0 +1,146 @@
+{
+  "sc_warrior_head": {
+    "id": "sc_warrior_head",
+    "name": "蒼鋼戰冠",
+    "job": "warrior",
+    "slot": "head",
+    "icon": "/assets/equipment_icons/sc_warrior_head.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_warrior_body": {
+    "id": "sc_warrior_body",
+    "name": "蒼鋼守衛鎧",
+    "job": "warrior",
+    "slot": "body",
+    "icon": "/assets/equipment_icons/sc_warrior_body.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_warrior_cape": {
+    "id": "sc_warrior_cape",
+    "name": "守誓披風",
+    "job": "warrior",
+    "slot": "cape",
+    "icon": "/assets/equipment_icons/sc_warrior_cape.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_warrior_weapon": {
+    "id": "sc_warrior_weapon",
+    "name": "晨鋒長劍",
+    "job": "warrior",
+    "slot": "weapon",
+    "icon": "/assets/equipment_icons/sc_warrior_weapon.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_mage_head": {
+    "id": "sc_mage_head",
+    "name": "星淵法帽",
+    "job": "mage",
+    "slot": "head",
+    "icon": "/assets/equipment_icons/sc_mage_head.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_mage_body": {
+    "id": "sc_mage_body",
+    "name": "星紋秘術袍",
+    "job": "mage",
+    "slot": "body",
+    "icon": "/assets/equipment_icons/sc_mage_body.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_mage_cape": {
+    "id": "sc_mage_cape",
+    "name": "暮星斗篷",
+    "job": "mage",
+    "slot": "cape",
+    "icon": "/assets/equipment_icons/sc_mage_cape.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_mage_weapon": {
+    "id": "sc_mage_weapon",
+    "name": "秘晶法杖",
+    "job": "mage",
+    "slot": "weapon",
+    "icon": "/assets/equipment_icons/sc_mage_weapon.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_archer_head": {
+    "id": "sc_archer_head",
+    "name": "翠羽兜帽",
+    "job": "archer",
+    "slot": "head",
+    "icon": "/assets/equipment_icons/sc_archer_head.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_archer_body": {
+    "id": "sc_archer_body",
+    "name": "疾風獵裝",
+    "job": "archer",
+    "slot": "body",
+    "icon": "/assets/equipment_icons/sc_archer_body.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_archer_cape": {
+    "id": "sc_archer_cape",
+    "name": "森語短披",
+    "job": "archer",
+    "slot": "cape",
+    "icon": "/assets/equipment_icons/sc_archer_cape.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_archer_weapon": {
+    "id": "sc_archer_weapon",
+    "name": "風吟長弓",
+    "job": "archer",
+    "slot": "weapon",
+    "icon": "/assets/equipment_icons/sc_archer_weapon.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_spirit_head": {
+    "id": "sc_spirit_head",
+    "name": "星輝靈冠",
+    "job": "spirit",
+    "slot": "head",
+    "icon": "/assets/equipment_icons/sc_spirit_head.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_spirit_body": {
+    "id": "sc_spirit_body",
+    "name": "共鳴法衣",
+    "job": "spirit",
+    "slot": "body",
+    "icon": "/assets/equipment_icons/sc_spirit_body.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_spirit_cape": {
+    "id": "sc_spirit_cape",
+    "name": "靈光披風",
+    "job": "spirit",
+    "slot": "cape",
+    "icon": "/assets/equipment_icons/sc_spirit_cape.png",
+    "category": "equip",
+    "implemented": false
+  },
+  "sc_spirit_weapon": {
+    "id": "sc_spirit_weapon",
+    "name": "神寵共鳴珠",
+    "job": "spirit",
+    "slot": "weapon",
+    "icon": "/assets/equipment_icons/sc_spirit_weapon.png",
+    "category": "equip",
+    "implemented": false
+  }
+}
