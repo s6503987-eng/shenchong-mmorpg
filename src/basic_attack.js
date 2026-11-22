@@ -160,7 +160,7 @@ export class BasicAttackSystem{
   damageDummy(b){
     const s=this.scene;
     const amount=b.combo===2?this.opts.damage2:this.opts.damage1;
-    this.hp=Math.max(0,this.hp-amount);
+    if(!this.applyDummyDamage(amount, '御靈師擊破訓練木樁！')) return;
     // 震盪光環 + 散射碎光 + 木樁輕微震動
     const col=b.combo===2?0xffd078:0x8ceeff;
     this.emit(this.dummyX,this.dummyY-20,col,22,210);
@@ -169,9 +169,22 @@ export class BasicAttackSystem{
     s.tweens.add({targets:this.dummy,x:this.dummyX+(b.dir*7),duration:55,yoyo:true,repeat:1,onComplete:()=>{if(this.dummy?.active)this.dummy.x=this.dummyX;}});
     const txt=s.add.text(this.dummyX,this.dummyY-111,`-${amount}`,{fontFamily:'Arial',fontSize:'25px',fontStyle:'bold',color:b.combo===2?'#ffe49c':'#c1f5ff',stroke:'#284c70',strokeThickness:4}).setOrigin(.5).setDepth(50);
     s.tweens.add({targets:txt,y:txt.y-38,alpha:0,duration:700,onComplete:()=>txt.destroy()});
+  }
+  applyDummyDamage(amount, defeatMessage) {
+    if (this.dead || !Number.isFinite(amount) || amount <= 0) return false;
+    this.hp = Math.max(0, this.hp - amount);
+    this.dead = this.hp === 0;
     this.refresh();
-    if(this.hp===0){this.dead=true;this.refresh();s.showNotice?.('御靈師擊破訓練木樁！');this.respawn?.remove(false);
-      this.respawn=s.time.delayedCall(this.opts.respawnMs,()=>{this.hp=this.opts.dummyMaxHp;this.dead=false;this.refresh();});}
+    if (this.dead) {
+      this.scene.showNotice?.(defeatMessage);
+      this.respawn = this.scene.time.delayedCall(this.opts.respawnMs, () => {
+        this.hp = this.opts.dummyMaxHp;
+        this.dead = false;
+        this.respawn = null;
+        this.refresh();
+      });
+    }
+    return true;
   }
   destroy(){
     const s=this.scene;

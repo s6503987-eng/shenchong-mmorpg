@@ -44,13 +44,14 @@ export class SpiritSkillSystem{
     this.refreshAt=0;
     this.onUpdate=(_t,delta)=>{const lv=this.level();if(lv!==this.lastLevel||identity()!==this.identity){this.load();this.lastLevel=lv;this.refresh()}
       if(this.identity&&this.mp<this.maxMp)this.mp=Math.min(this.maxMp,this.mp+Math.max(0,delta||0)/1000*(1.6+this.rank('mana_flow')*.65));
-      const now=scene.time?.now||0;if(now>=this.refreshAt){this.refreshAt=now+180;this.refreshBar();this.updateLiveCounters();}
+      const now=scene.time?.now||0;if(now>=this.refreshAt){this.refreshAt=now+180;this.syncManaLimit();this.refreshBar();this.updateLiveCounters();}
     };
     scene.events.on('update',this.onUpdate);scene.events.once('shutdown',()=>this.destroy());
   }
   level(){return Math.max(1,Math.min(200,Number(this.scene.progression?.level||1)))}
   rank(id){return Math.max(0,Number(this.ranks[id]||0))}
   maxMana(){return Math.max(85+(this.level()-1)*8,Number(this.scene.stats?.model?.mpMax)||0)+this.rank('mana_flow')*10}
+  syncManaLimit(){this.maxMp=this.maxMana();this.mp=Math.min(this.mp,this.maxMp)}
   load(){const now=identity();if(now===this.identity&&now)return;this.identity=now;this.ranks={};this.cooldown={};
     if(now){try{const saved=JSON.parse(localStorage.getItem(storeKey)||'null');if(saved?.identity===now&&saved.ranks){for(const s of SKILLS)this.ranks[s.id]=Math.max(0,Math.min(s.max,Math.floor(Number(saved.ranks[s.id])||0)));}}catch{}
       // 防止外部或舊資料造成非法超額學習。
@@ -59,14 +60,13 @@ export class SpiritSkillSystem{
     this.lastLevel=this.level();this.maxMp=this.maxMana();this.mp=this.maxMp;this.persist();
   }
   persist(){if(!this.identity)return;try{localStorage.setItem(storeKey,JSON.stringify({identity:this.identity,ranks:this.ranks,version:1}))}catch(e){console.warn('技能存檔失敗',e)}}
-  learn(id){const skill=getSkill(id);if(!skill||this.scene.advancement?.rank<(skill.stage||0)){this.scene.showNotice?.('請先完成對應轉職');return false}const next=learnSkill(this.level(),this.ranks,id,this.scene.advancement?.rank||0);if(!this.identity||!next)return false;this.ranks=next;this.maxMp=this.maxMana();this.mp=Math.min(this.mp,this.maxMp);this.persist();this.refresh();this.scene.showNotice?.(`${getSkill(id).name} Lv.${this.rank(id)}`);return true}
+  learn(id){const skill=getSkill(id);if(!skill||this.scene.advancement?.rank<(skill.stage||0)){this.scene.showNotice?.('請先完成對應轉職');return false}const next=learnSkill(this.level(),this.ranks,id,this.scene.advancement?.rank||0);if(!this.identity||!next)return false;this.ranks=next;this.syncManaLimit();this.persist();this.refresh();this.scene.showNotice?.(`${getSkill(id).name} Lv.${this.rank(id)}`);return true}
   isBlocked(){const s=this.scene;return !!(this.open||s.dialogOpen||s.keybinds?.open||s.inventory?.open||s.equipment?.open||s.characterUI?.isBlocking?.()||s.wardrobe?.open||s.stats?.open||s.progression?.open||s.feedingOpen||s.advancement?.open)}
   cast(id){const s=this.scene,p=s.player,skill=getSkill(id),rank=this.rank(id);if(!this.identity||!skill||skill.kind!=='active'||rank<1||(this.scene.advancement?.rank||0)<(skill.stage||0)||this.isBlocked()||!p?.active)return false;
     const now=s.time?.now||0;if(now<(this.cooldown[id]||0)||this.mp<skill.mp){if(this.mp<skill.mp)s.showNotice?.('MP 不足');return false;}
     this.mp-=skill.mp;this.cooldown[id]=now+skill.cd;
     const dir=p.flipX?-1:1,startX=p.x+dir*26,startY=p.y-22,radius=id==='spirit_burst'?245:id==='spirit_pulse'?325:id==='spirit_lance'?430:Math.min(570,430+skill.stage*30);
     const fx=s.add.graphics().setDepth(47),color=id==='spirit_lance'?0xf0d9ff:id==='spirit_pulse'?0x8ceaff:0x60d8ff;
-    const hitX=startX+dir*Math.min(radius,160),hitY=startY;
     let elapsed=0;const onUpdate=(_t,d)=>{elapsed+=Math.max(0,d||0);fx.clear();const pct=Math.min(1,elapsed/330);fx.lineStyle(4,color,1-pct*.7).strokeCircle(startX,startY,10+26*pct);
       if(id==='spirit_pulse'){fx.lineStyle(3,0xffffff,1-pct).strokeEllipse(startX+dir*75,startY,65+80*pct,31+42*pct)}
       else{fx.lineStyle(id==='spirit_lance'?9:5,color,1-pct*.8).lineBetween(startX,startY,startX+dir*(45+radius*pct),startY);fx.fillStyle(0xffffff,1-pct).fillCircle(startX+dir*(45+radius*pct),startY,7)}
@@ -75,23 +75,52 @@ export class SpiritSkillSystem{
     const a=s.basicAttack;
     if(a&&!a.dead&&a.dummy?.active&&(a.dummyX-p.x)*dir>0&&Math.abs(a.dummyX-p.x)<=radius&&Math.abs((a.dummyY-20)-startY)<75){
       const damage=skillDamage(id,rank,s.stats?.model?.magicBonus||0,this.rank('spirit_affinity') + this.rank('contract_focus')*2/3 + this.rank('spirit_echo')*2/3 + this.rank('star_blessing') + this.rank('sage_wisdom') + this.rank('divine_resonance')*4/3);
-      a.hp=Math.max(0,a.hp-damage);a.emit?.(a.dummyX,a.dummyY-20,color,20,150);a.refresh();
+      a.applyDummyDamage(damage, '御靈師技能擊破木樁！');
+      a.emit?.(a.dummyX,a.dummyY-20,color,20,150);
       const number=s.add.text(a.dummyX,a.dummyY-104,`-${damage}`,{fontSize:'24px',fontFamily:'Arial',fontStyle:'bold',color:'#d9f4ff',stroke:'#17314b',strokeThickness:4}).setOrigin(.5).setDepth(50);
       s.tweens.add({targets:number,y:number.y-32,alpha:0,duration:620,onComplete:()=>number.destroy()});
-      if(a.hp===0){a.dead=true;a.refresh();s.showNotice?.('御靈師技能擊破木樁！');a.respawn?.remove(false);a.respawn=s.time.delayedCall(a.opts.respawnMs,()=>{a.hp=a.opts.dummyMaxHp;a.dead=false;a.refresh()})}
     }
     this.refreshBar();return true;
   }
   toggle(force){if(!this.identity){this.scene.showNotice?.('請先建立御靈師角色');return}this.open=typeof force==='boolean'?force:!this.open;this.panel.style.display=this.open?'flex':'none';if(this.open)this.render()}
-  refresh(){this.maxMp=this.maxMana();this.mp=Math.min(this.mp,this.maxMp);this.refreshBar();if(this.open)this.render()}
+  refresh(){this.syncManaLimit();this.refreshBar();if(this.open)this.render()}
   updateLiveCounters(){
     // 更新文字，而非替換整個按鈕：避免滑鼠按下時 DOM 被換掉，導致 click 事件流失。
     if(!this.open)return;
     const mp=this.panel.querySelector('[data-sk-live-mp]');
     if(mp)mp.textContent=`MP ${Math.floor(this.mp)}/${this.maxMp}`;
   }
-  refreshBar(){if(!this.identity){this.hud.style.display='none';return}this.hud.style.display='flex';const now=this.scene.time?.now||0;
-    this.hud.innerHTML=SKILLS.filter(s=>s.kind==='active').map((s,i)=>{const r=this.rank(s.id),cd=Math.max(0,((this.cooldown[s.id]||0)-now)/1000);return `<button data-sk-short="${s.id}" title="${elEscape(s.name)}" style="min-width:95px;background:#12314edb;border:1px solid #cfb579;border-radius:8px;padding:6px;color:#fff;cursor:pointer;font-size:12px">${elEscape(this.scene.keybinds?.bindings?.['skill'+(i+1)]||String(i+1))} · ${elEscape(s.name)}<br><small>${(this.scene.advancement?.rank||0)<(s.stage||0)?'未轉職':!r?'未學習':cd>0?cd.toFixed(1)+' 秒':'Lv.'+r}</small></button>`}).join('')+`<div style="padding:7px;background:#11263edb;border:1px solid #588cb5;border-radius:7px;font-size:12px">MP ${Math.floor(this.mp)}/${this.maxMp}</div>`;
+  refreshBar() {
+    this.hud.style.display = this.identity ? 'flex' : 'none';
+    if (!this.identity) return;
+    if (!this.slots) {
+      this.slots = SKILLS.filter(skill => skill.kind === 'active').map(skill => {
+        const button = document.createElement('button');
+        button.dataset.skShort = skill.id;
+        button.title = skill.name;
+        button.style.cssText = 'min-width:95px;background:#12314edb;border:1px solid #cfb579;border-radius:8px;padding:6px;color:#fff;cursor:pointer;font-size:12px';
+        const label = document.createElement('span');
+        const status = document.createElement('small');
+        button.append(label, document.createElement('br'), status);
+        this.hud.append(button);
+        return { skill, label, status };
+      });
+      this.hudMana = document.createElement('div');
+      this.hudMana.style.cssText = 'padding:7px;background:#11263edb;border:1px solid #588cb5;border-radius:7px;font-size:12px';
+      this.hud.append(this.hudMana);
+    }
+    const now = this.scene.time?.now || 0;
+    this.slots.forEach(({skill, label, status}, index) => {
+      const key = this.scene.keybinds?.bindings?.['skill'+(index+1)] || String(index+1);
+      const rank = this.rank(skill.id);
+      const cd = Math.max(0, ((this.cooldown[skill.id] || 0) - now) / 1000);
+      label.textContent = `${key} · ${skill.name}`;
+      status.textContent = (this.scene.advancement?.rank || 0) < (skill.stage || 0) ? '未轉職'
+        : !rank ? '未學習' : cd > 0 ? cd.toFixed(1)+' 秒' : 'Lv.'+rank;
+    });
+    const mana = `MP ${Math.floor(this.mp)}/${this.maxMp}`;
+    this.hudMana.textContent = mana;
+    this.scene.mpLabel?.setText(mana);
   }
   render(){const lv=this.level(),sp=availableSP(lv,this.ranks),rank=this.scene.advancement?.rank||0;
     const actives=SKILLS.filter(s=>s.kind==='active');
